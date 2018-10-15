@@ -6,9 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"reflect"
-	"strconv"
 )
 
 type GetEmailStatusParams struct {
@@ -29,7 +26,7 @@ type GetEmailStatusParams struct {
 // Access Level required: ViewReports
 func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) {
 
-	req, err := m.client.NewRequest("GET", m.apiBase, nil)
+	req, err := http.NewRequest("GET", m.apiBase, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
