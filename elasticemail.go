@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	ApiBase       = "https://api.elasticemail.com/v2"
-	emailEndpoint = "email"
+	ApiBase = "https://api.elasticemail.com/v2"
 )
 
 type ElasticEmail interface {
