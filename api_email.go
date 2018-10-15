@@ -3,6 +3,7 @@ package elasticemail
 import (
 	"fmt"
 	"github.com/google/go-querystring/query"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
