@@ -38,7 +38,7 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) {
 	req.URL.RawQuery = v.Encode()
 	fmt.Println(req.URL.String())
 
-	resp, _ := m.client.Do(r)
+	resp, _ := m.client.Do(req)
 
 	f, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
