@@ -1,7 +1,10 @@
 package elasticemail
 
 import (
+	"github.com/joho/godotenv"
+	"log"
 	"net/http"
+	"os"
 )
 
 const (
@@ -25,6 +28,23 @@ type ElasticEmailImpl struct {
 func NewElasticEmail(apiKey string) *ElasticEmailImpl {
 	return &ElasticEmailImpl{
 		apiBase: ApiBase,
+		apiKey:  apiKey,
+		client:  http.DefaultClient,
+	}
+}
+
+func NewElasticEmailFromEnv() *ElasticEmailImpl {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	apiKey := os.Getenv("ELASTICEMAIL_APIKEY")
+	apiBase := os.Getenv("ELASTICEMAIL_API_BASE")
+
+	return &ElasticEmailImpl{
+		apiBase: apiBase,
 		apiKey:  apiKey,
 		client:  http.DefaultClient,
 	}
