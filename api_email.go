@@ -2,6 +2,7 @@ package elasticemail
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/go-querystring/query"
 	"io/ioutil"
@@ -30,7 +31,7 @@ type GetEmailStatusParams struct {
 
 // Get email batch status
 // Access Level required: ViewReports
-func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status EmailJobStatus, err error) {
+func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *EmailJobStatus, err error) {
 
 	url := fmt.Sprintf("%s/%s/%s", m.apiBase, emailEndpoint, mGetEmailStatus)
 	req, err := http.NewRequest("GET", url, nil)
@@ -42,7 +43,10 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status E
 	req.URL.RawQuery = v.Encode()
 	fmt.Println(req.URL.String())
 
-	resp, _ := m.client.Do(req)
+	resp, err := m.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 
 	log.Println(resp.Status)
 
@@ -50,7 +54,7 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status E
 	if err != nil {
 		log.Println(err)
 	}
-	resp.Body.Close()
+	defer resp.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,20 +72,22 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status E
 	}
 	if success == true {
 		fmt.Printf("!!!!!!!!!!!!!!!")
-	}
+		data, _ := dd["data"]
 
-	data, _ := dd["data"]
+		original, ok := data.(EmailJobStatus)
+		if ok {
+			println(original.Status)
+			fmt.Printf("ORIGINAL: \n%+v\n", original)
+		} else {
+			fmt.Printf("can not convert")
+		}
 
-	original, ok := data.(EmailJobStatus)
-	if ok {
-		println(original.Status)
-		fmt.Printf("ORIGINAL: \n%+v\n", original)
+		log.Printf("%v", dd)
+		fmt.Printf("\n%+v\n", dd)
+
+		return &original, nil
 	} else {
-		fmt.Printf("can not convert")
+		err = errors.New(dd["error"].(string))
+		return nil, err
 	}
-
-	log.Printf("%v", dd)
-	fmt.Printf("\n%+v\n", dd)
-
-	return original, nil
 }

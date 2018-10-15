@@ -1,9 +1,7 @@
 package elasticemail
 
 import (
-	"net"
 	"net/http"
-	"time"
 )
 
 const (
@@ -25,21 +23,10 @@ type ElasticEmailImpl struct {
 }
 
 func NewElasticEmail(apiKey string) *ElasticEmailImpl {
-	var netTransport = &http.Transport{
-		Dial: (&net.Dialer{
-			Timeout: 5 * time.Second,
-		}).Dial,
-		TLSHandshakeTimeout: 5 * time.Second,
-	}
-	var netClient = &http.Client{
-		Timeout:   time.Second * 10,
-		Transport: netTransport,
-	}
-
 	return &ElasticEmailImpl{
 		apiBase: ApiBase,
 		apiKey:  apiKey,
-		client:  netClient,
+		client:  http.DefaultClient,
 	}
 }
 
