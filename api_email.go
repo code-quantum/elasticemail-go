@@ -7,7 +7,6 @@ import (
 	"github.com/google/go-querystring/query"
 	"github.com/mitchellh/mapstructure"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -37,19 +36,16 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *
 	url := fmt.Sprintf("%s/%s/%s", m.apiBase, emailEndpoint, mGetEmailStatus)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 	v, _ := query.Values(params)
 	v.Add("apikey", m.apiKey)
 	req.URL.RawQuery = v.Encode()
-	fmt.Println(req.URL.String())
 
 	resp, err := m.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println(resp.Status)
 
 	if resp.StatusCode == http.StatusOK {
 
@@ -78,7 +74,6 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *
 			if err != nil {
 				return nil, err
 			}
-			fmt.Printf("\n%+v\n", st)
 			return &st, nil
 		} else {
 			err = errors.New(dd["error"].(string))
