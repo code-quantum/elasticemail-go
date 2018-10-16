@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/go-querystring/query"
+	"github.com/mitchellh/mapstructure"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -50,44 +51,41 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *
 
 	log.Println(resp.Status)
 
-	f, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-	}
-	defer resp.Body.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	if resp.StatusCode == http.StatusOK {
 
-	// jsonStr := string(f)
+		defer resp.Body.Close()
 
-	fmt.Println(string(f))
+		f, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		dd := make(map[string]interface{})
+		json.Unmarshal(f, &dd)
 
-	dd := make(map[string]interface{})
-	json.Unmarshal(f, &dd)
-
-	success, ok := dd["success"]
-	if !ok {
-		fmt.Printf("ok is false")
-	}
-	if success == true {
-		fmt.Printf("!!!!!!!!!!!!!!!")
-		data, _ := dd["data"]
-
-		original, ok := data.(EmailJobStatus)
-		if ok {
-			println(original.Status)
-			fmt.Printf("ORIGINAL: \n%+v\n", original)
-		} else {
-			fmt.Printf("can not convert")
+		success, ok := dd["success"]
+		if !ok {
+			return nil, errors.New("json response does not contain success field")
 		}
 
-		log.Printf("%v", dd)
-		fmt.Printf("\n%+v\n", dd)
+		if success == true {
+			data, ok := dd["data"]
+			if !ok {
+				return nil, errors.New("json response contain success true, but data field does not exists")
+			}
 
-		return &original, nil
-	} else {
-		err = errors.New(dd["error"].(string))
-		return nil, err
+			st := EmailJobStatus{}
+			err := mapstructure.Decode(data, &st)
+			if err != nil {
+				return nil, err
+			}
+			fmt.Printf("\n%+v\n", st)
+			return &st, nil
+		} else {
+			err = errors.New(dd["error"].(string))
+			return nil, err
+		}
 	}
+
+	err = errors.New(resp.Status)
+	return nil, err
 }
