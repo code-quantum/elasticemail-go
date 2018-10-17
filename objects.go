@@ -39,3 +39,17 @@ type EmailJobStatus struct {
 	Unsubscribed      *[]string               `json:"unsubscribed"`
 	UnsubscribedCount int                     `json:"unsubscribedcount"`
 }
+
+type EmailStatus struct {
+	Date             string `json:"date"`
+	DateClicked      string `json:"dateclicked"`
+	DateOpened       string `json:"dateopened"`
+	DateSent         string `json:"datesent"`
+	ErrorMessage     string `json:"errormessage"`
+	From             string `json:"from"`
+	Status           uint8  `json:"status"` // value from LogJobStatus Enumeration
+	StatusChangeDate string `json:"statuschangedate"`
+	StatusName       string `json:"statusname"`
+	To               string `json:"to"`
+	TransactionID    string `json:"transactionid"`
+}

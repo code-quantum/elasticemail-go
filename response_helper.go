@@ -10,10 +10,10 @@ import (
 	"net/http"
 )
 
-func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interface{}) (result *interface{}, err error) {
+func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interface{}) (err error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	v, _ := query.Values(params)
 	v.Add("apikey", m.apiKey)
@@ -21,7 +21,7 @@ func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interf
 
 	resp, err := m.client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if resp.StatusCode == http.StatusOK {
@@ -30,7 +30,7 @@ func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interf
 
 		f, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		dd := make(map[string]interface{})
 		json.Unmarshal(f, &dd)
@@ -39,29 +39,29 @@ func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interf
 
 		success, ok := dd["success"]
 		if !ok {
-			return nil, errors.New("json response does not contain success field")
+			return errors.New("json response does not contain success field")
 		}
 
 		if success == true {
 			data, ok := dd["data"]
 			if !ok {
-				return nil, errors.New("json response contain success true, but data field does not exists")
+				return errors.New("json response contain success true, but data field does not exists")
 			}
 
 			err := mapstructure.Decode(data, out)
 			if err != nil {
-				return nil, err
+				return err
 			}
 
 			log.Printf("OUT:\n%+v\n", out)
 
-			return &out, nil
+			return nil
 		} else {
 			err = errors.New(dd["error"].(string))
-			return nil, err
+			return err
 		}
 	}
 
 	err = errors.New(resp.Status)
-	return nil, err
+	return err
 }
