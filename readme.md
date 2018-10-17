@@ -1,6 +1,6 @@
 ### About
 
-Implementation of [ElasticEmail API](https://api.elasticemail.com/public/help#start).
+Go library for interacting with the [ElasticEmail API](https://api.elasticemail.com/public/help#start).
 
 ### Supported methods
 
