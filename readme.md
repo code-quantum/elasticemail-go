@@ -15,6 +15,8 @@ Implementation of [ElasticEmail API](https://api.elasticemail.com/public/help#st
 ### Usage
 
 ```go
+        ee := elasticemail.NewElasticEmail("api-key")
+        
         //send email
 	to := make([]string, 1)
 	to[0] = "abc@gmail.com"
