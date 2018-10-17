@@ -36,6 +36,7 @@ func sendGetResp(m *ElasticEmailImpl, url string, params interface{}, out interf
 		json.Unmarshal(f, &dd)
 
 		log.Printf("DD:\n%+v\n", dd)
+		log.Printf("JSON RESP:\n%s\n", string(f))
 
 		success, ok := dd["success"]
 		if !ok {

@@ -30,6 +30,10 @@ type StatusParams struct {
 	MessageID string `json:"messageID" url:"messageID"` // Unique identifier for this email.
 }
 
+type ViewParams struct {
+	MessageID string `json:"messageID" url:"messageID"` // Unique identifier for this email.
+}
+
 // Get email batch status
 // Access Level required: ViewReports
 func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *EmailJobStatus, err error) {
@@ -59,5 +63,19 @@ func (m *ElasticEmailImpl) Status(params StatusParams) (status *EmailStatus, err
 	}
 	fmt.Printf("Status result:\n%+v\n", out)
 
+	return &out, nil
+}
+
+// View email
+// Access Level required: ViewReports
+func (m *ElasticEmailImpl) View(params ViewParams) (status *EmailView, err error) {
+	url := fmt.Sprintf("%s/%s/%s", m.apiBase, emailEndpoint, mView)
+
+	out := EmailView{}
+	err = sendGetResp(m, url, params, &out)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("View result:\n%+v\n", out)
 	return &out, nil
 }
