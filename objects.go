@@ -59,3 +59,8 @@ type EmailView struct {
 	From    string `json:"from"`
 	Subject string `json:"subject"`
 }
+
+type EmailSend struct {
+	MessageID     string `json:"messageid"`
+	TransactionID string `json:"transactionid"`
+}

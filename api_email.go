@@ -34,6 +34,43 @@ type ViewParams struct {
 	MessageID string `json:"messageID" url:"messageID"` // Unique identifier for this email.
 }
 
+type SendParams struct {
+	Attachments         []string `json:"attachments"`
+	BodyHtml            string   `json:"bodyhtml"`
+	BodyText            string   `json:"bodytext"`
+	To                  []string `json:"to"`
+	Channel             string   `json:"channel"`
+	Charset             string   `json:"charset"`
+	CharsetBodyHtml     string   `json:"charsetbodyhtml"`
+	CharsetBodyText     string   `json:"charsetbodytext"`
+	DataSource          string   `json:"datasource"`
+	EncodingType        int8     `json:"encodingtype"` // EncodingType Enumeration
+	From                string   `json:"from"`
+	FromName            string   `json:"fromname"`
+	Headers             []string `json:"headers"` // example: headers_xmailer = xmailer: header-value1  Whitespace required!
+	IsTransactional     bool     `json:"istransactional"`
+	Lists               []string `json:"lists"`
+	Merge               string   `json:"merge"` // example: merge_firstname=John, ....
+	MergeSourceFilename string   `json:"mergesourcefilename"`
+	MsgBcc              []string `json:"msgbcc"`
+	MsgCC               []string `json:"msgcc"`
+	MsgFrom             string   `json:"msgfrom"`
+	MsgFromName         string   `json:"msgfromname"`
+	MsgTo               []string `json:"msgto"`
+	PoolName            string   `json:"poolname"`
+	PostBack            string   `json:"postback"`
+	ReplyTo             string   `json:"replyto"`
+	ReplyToName         string   `json:"replytoname"`
+	Segments            []string `json:"sefments"`
+	Sender              string   `json:"sender"`
+	SenderName          string   `json:"sendername"`
+	Subject             string   `json:"subject"`
+	Template            string   `json:"template"`
+	TimeOffSetMinutes   string   `json:"timeoffsetminutes"`
+	TrackClicks         bool     `json:"trackclicks"`
+	TrackOpens          bool     `json:"trackopens"`
+}
+
 // Get email batch status
 // Access Level required: ViewReports
 func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *EmailJobStatus, err error) {
@@ -45,7 +82,6 @@ func (m *ElasticEmailImpl) GetEmailStatus(params GetEmailStatusParams) (status *
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("GetEmailStatus Result:\n%+v\n", out)
 
 	return &out, nil
 }
@@ -61,7 +97,6 @@ func (m *ElasticEmailImpl) Status(params StatusParams) (status *EmailStatus, err
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Status result:\n%+v\n", out)
 
 	return &out, nil
 }
@@ -76,6 +111,23 @@ func (m *ElasticEmailImpl) View(params ViewParams) (status *EmailView, err error
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("View result:\n%+v\n", out)
+
+	return &out, nil
+}
+
+// Submit emails.
+// The HTTP POST request is suggested.
+// The default, maximum (accepted by us) size of an email is 10 MB in total, with or without attachments included.
+// For suggested implementations please refer to https://elasticemail.com/support/http-api/
+// Access Level required: SendHttp
+func (m *ElasticEmailImpl) Send(params SendParams) (status *EmailSend, err error) {
+	url := fmt.Sprintf("%s/%s/%s", m.apiBase, emailEndpoint, mSend)
+
+	out := EmailSend{}
+	err = sendPostResp(m, url, params, &out)
+	if err != nil {
+		return nil, err
+	}
+
 	return &out, nil
 }
