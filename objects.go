@@ -64,3 +64,13 @@ type EmailSend struct {
 	MessageID     string `json:"messageid"`
 	TransactionID string `json:"transactionid"`
 }
+
+type List struct {
+	AllowUnsubscribe bool   `json:"allowunsubscribe"`
+	Count            int    `json:"count"`
+	DateAdded        string `json:"dateadded"`
+	ListID           int    `json:"listid"`
+	ListName         string `json:"listname"`
+	PublicListID     string `json:"publiclistid"`
+	Rule             string `json:"rule"`
+}
