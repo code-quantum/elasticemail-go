@@ -11,7 +11,21 @@ Go library for interacting with the [ElasticEmail API](https://api.elasticemail.
     - [x] GetStatus  
     - [x] Send  
     - [x] Status  
-    - [x] View  
+    - [x] View
+    
+- Template:
+
+    Managing and editing templates of your emails
+
+    - [x] GetList
+
+- List:
+
+    API methods for managing your Lists
+
+    - [x] list    
+        
+        
 ### Usage
 
 ```go
