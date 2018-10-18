@@ -74,3 +74,23 @@ type List struct {
 	PublicListID     string `json:"publiclistid"`
 	Rule             string `json:"rule"`
 }
+
+type Template struct {
+	BodyHtm            string `json:"bodyhtml"`
+	BodyText           string `json:"bodytext"`
+	Css                string `json:"css"`
+	DateAdded          string `json:"dateadded"`
+	FromEmail          string `json:"fromemail"`
+	FromName           string `json:"fromname"`
+	Name               string `json:"name"`
+	OriginalTemplateID int    `json:"originaltemplateid"`
+	Subject            string `json:"subject"`
+	TemplateID         int    `json:"templateid"`
+	TemplateScope      int    `json:"templatescope"`
+	TemplateType       int    `json:"templatetype"`
+}
+
+type TemplateList struct {
+	DraftTemplate []Template `json:"drafttemplate"`
+	Templates     []Template `json:"templates"`
+}
