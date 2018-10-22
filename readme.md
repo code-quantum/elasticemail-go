@@ -23,7 +23,13 @@ Go library for interacting with the [ElasticEmail API](https://api.elasticemail.
 
     API methods for managing your Lists
 
-    - [x] list    
+    - [x] list
+    
+- Contact:
+
+    Methods used to manage your Contacts.
+
+    - [x] Add    
         
         
 ### Usage
